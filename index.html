@@ -1,36 +1,44 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <!-- Basic web page settings -->
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Ather Energy — Investor Intelligence Hub</title>
+  
+  <!-- Load fonts from Google to make the text look clean -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,600;1,6..72,400&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
   
+  <!-- Load PapaParse library (this helps read CSV files easily) -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+
   <style>
+    /* Colors used on the page */
     :root {
-      --bg: #fbfbf9;
-      --card-bg: #ffffff;
-      --text-main: #111111;
-      --text-muted: #666666;
-      --border: #e2e2dc;
-      --accent: #2e7d32;
+      --bg: #fbfbf9;         /* Page background */
+      --card-bg: #ffffff;    /* Card background */
+      --text-main: #111111;  /* Main text color */
+      --text-muted: #666666; /* Gray text color */
+      --border: #e2e2dc;     /* Light gray border color */
     }
 
+    /* Simple reset for spacing */
     * { box-sizing: border-box; margin: 0; padding: 0; }
 
+    /* Page container layout */
     body {
       background-color: var(--bg);
       color: var(--text-main);
-      font-family: 'Inter', -apple-system, sans-serif;
+      font-family: 'Inter', sans-serif;
       line-height: 1.5;
       padding: 1.5rem;
       max-width: 1200px;
       margin: 0 auto;
     }
 
+    /* Top banner heading */
     header {
       border-bottom: 3px double var(--text-main);
       padding-bottom: 1.5rem;
@@ -42,7 +50,6 @@
       font-family: 'Newsreader', serif;
       font-size: 2.75rem;
       font-weight: 600;
-      letter-spacing: -0.02em;
       text-transform: uppercase;
       margin-bottom: 0.25rem;
     }
@@ -50,12 +57,19 @@
     .subhead {
       font-size: 0.85rem;
       text-transform: uppercase;
-      letter-spacing: 0.1em;
       color: var(--text-muted);
-      font-weight: 500;
     }
 
-    /* Ticker Bar */
+    /* Section titles */
+    .section-title {
+      font-family: 'Newsreader', serif;
+      font-size: 1.5rem;
+      border-bottom: 1px solid var(--text-main);
+      padding-bottom: 0.5rem;
+      margin-bottom: 1.5rem;
+    }
+
+    /* Box grid for Live Valuation section */
     .ticker-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
@@ -73,7 +87,6 @@
     .ticker-label {
       font-size: 0.75rem;
       text-transform: uppercase;
-      letter-spacing: 0.05em;
       color: var(--text-muted);
       margin-bottom: 0.25rem;
     }
@@ -84,16 +97,7 @@
       font-weight: 600;
     }
 
-    /* Section Headers */
-    .section-title {
-      font-family: 'Newsreader', serif;
-      font-size: 1.5rem;
-      border-bottom: 1px solid var(--text-main);
-      padding-bottom: 0.5rem;
-      margin-bottom: 1.5rem;
-    }
-
-    /* Sources Grid */
+    /* Box grid for Sources section */
     .sources-grid {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
@@ -108,7 +112,6 @@
       display: flex;
       flex-direction: column;
       justify-content: space-between;
-      transition: border-color 0.2s ease;
     }
 
     .source-card:hover {
@@ -119,13 +122,11 @@
       display: inline-block;
       font-size: 0.65rem;
       text-transform: uppercase;
-      letter-spacing: 0.08em;
       padding: 0.2rem 0.5rem;
       background: #f0f0eb;
       font-weight: 600;
       border-radius: 2px;
       margin-bottom: 0.75rem;
-      width: fit-content;
     }
 
     .source-name {
@@ -146,7 +147,6 @@
       align-items: center;
       border-top: 1px dashed var(--border);
       padding-top: 0.75rem;
-      margin-top: auto;
     }
 
     .source-date {
@@ -165,6 +165,7 @@
       text-decoration: underline;
     }
 
+    /* Temporary loading text style */
     .loading {
       color: var(--text-muted);
       font-style: italic;
@@ -173,76 +174,95 @@
 </head>
 <body>
 
+  <!-- Website Header -->
   <header>
     <h1 class="masthead">The Ather Gazette</h1>
-    <p class="subhead">Stock Tracking & Source Hub • Automated via Google Sheets</p>
+    <p class="subhead">Stock Tracking & Source Hub • Powered by CSV Files</p>
   </header>
 
+  <!-- Section 1: Live Valuation Cards -->
   <h2 class="section-title">Live Valuation Indicators</h2>
   <div class="ticker-grid" id="ticker-container">
     <p class="loading">Loading financial data...</p>
   </div>
 
+  <!-- Section 2: Verified Sources Cards -->
   <h2 class="section-title">Verified Intelligence Sources</h2>
   <div class="sources-grid" id="sources-container">
     <p class="loading">Loading sources feed...</p>
   </div>
 
+  <!-- JavaScript Code Section -->
   <script>
-    // -------------------------------------------------------------
-    // REPLACE THESE TWO URLS WITH YOUR ACTUAL PUBLISHED CSV LINKS:
-    // -------------------------------------------------------------
-    const LIVE_DATA_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQqBuCJPUe7GR8mtAYRrj9u6071aYdZ0PuRs-Ui2xR8nOjUIv6gwTNqCf2lR0OXi_0vf5p5EvZt0jNT/pub?gid=0&single=true&output=csv';
-    const NEWS_DESK_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQqBuCJPUe7GR8mtAYRrj9u6071aYdZ0PuRs-Ui2xR8nOjUIv6gwTNqCf2lR0OXi_0vf5p5EvZt0jNT/pub?gid=1553817120&single=true&output=csv';
+    // 1. Tell the website where our two uploaded CSV files are located
+    const LIVE_DATA_CSV_URL = './live_data.csv';
+    const NEWS_DESK_CSV_URL = './news_desk.csv';
 
-    // Fetch Live Ticker Data
-    <script>
-    // YOUR PUBLISHED GOOGLE SHEET CSV LINKS
-    const LIVE_DATA_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQqBuCJPUe7GR8mtAYRrj9u6O71aYdZ0PuRs-Ui2xR8nOjUlv6gwTNqCf2lR0OXi_0vf5p5EvZt0JNT/pub?gid=0&single=true&output=csv';
-    const NEWS_DESK_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQqBuCJPUe7GR8mtAYRrj9u6O71aYdZ0PuRs-Ui2xR8nOjUlv6gwTNqCf2lR0OXi_0vf5p5EvZt0JNT/pub?gid=1553817120&single=true&output=csv';
-
-    // Fetch Live Ticker Data
+    // ------------------------------------------------------------------
+    // STEP 1: Read the live_data.csv file and display financial indicators
+    // ------------------------------------------------------------------
     Papa.parse(LIVE_DATA_CSV_URL, {
-      download: true,
-      header: true,
-      skipEmptyLines: true,
+      download: true,       // Download the local file
+      header: true,         // Use top row names (Metric, Value)
+      skipEmptyLines: true, // Ignore empty rows
       complete: function(results) {
-        console.log("Live Data Results:", results);
+        
+        // Find the HTML container where cards will be placed
         const container = document.getElementById('ticker-container');
+        
+        // Check if file has data
         if (results.data && results.data.length > 0) {
-          container.innerHTML = '';
+          container.innerHTML = ''; // Remove "Loading financial data..." text
+          
+          // Loop through each row in the CSV file
           results.data.forEach(row => {
+            // Check if the row has both Metric and Value
             if (row.Metric && row.Value) {
+              
+              // Create a new box element
               const card = document.createElement('div');
               card.className = 'ticker-card';
+              
+              // Fill the box with data from the CSV row
               card.innerHTML = `
                 <div class="ticker-label">${row.Metric}</div>
                 <div class="ticker-value">${row.Value}</div>
               `;
+              
+              // Add this box to the page
               container.appendChild(card);
             }
           });
         }
-      },
-      error: function(err) {
-        console.error("Ticker Error:", err);
       }
     });
 
-    // Fetch Intelligence Sources
+    // ------------------------------------------------------------------
+    // STEP 2: Read the news_desk.csv file and display source links
+    // ------------------------------------------------------------------
     Papa.parse(NEWS_DESK_CSV_URL, {
-      download: true,
-      header: true,
-      skipEmptyLines: true,
+      download: true,       // Download the local file
+      header: true,         // Use top row names (Source_Name, Website_URL, etc.)
+      skipEmptyLines: true, // Ignore empty rows
       complete: function(results) {
-        console.log("News Desk Results:", results);
+        
+        // Find the HTML container where source cards will be placed
         const container = document.getElementById('sources-container');
+        
+        // Check if file has data
         if (results.data && results.data.length > 0) {
-          container.innerHTML = '';
+          container.innerHTML = ''; // Remove "Loading sources feed..." text
+          
+          // Loop through each row in the CSV file
           results.data.forEach(row => {
+            // Check if row has Source_Name and Website_URL
             if (row.Source_Name && row.Website_URL) {
+              
+              // Create a new source card box element
               const card = document.createElement('div');
               card.className = 'source-card';
+              
+              // Fill the box with data from the CSV row
               card.innerHTML = `
                 <div>
                   <span class="badge">${row.Category || 'General'}</span>
@@ -254,13 +274,12 @@
                   <a class="source-link" href="${row.Website_URL}" target="_blank" rel="noopener">Open Portal &rarr;</a>
                 </div>
               `;
+              
+              // Add this source box to the page
               container.appendChild(card);
             }
           });
         }
-      },
-      error: function(err) {
-        console.error("Sources Error:", err);
       }
     });
   </script>
