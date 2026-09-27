@@ -3,54 +3,82 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Ather & Auto Live News Feed</title>
+  <title>Ather Energy Intelligence Desk</title>
   <style>
     body {
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
       background-color: #0d1117;
       color: #c9d1d9;
-      max-width: 800px;
+      max-width: 850px;
       margin: 40px auto;
       padding: 0 20px;
     }
     h1 { color: #58a6ff; font-size: 24px; border-bottom: 1px solid #30363d; padding-bottom: 12px; }
+    .source-banner {
+      background: #161b22;
+      border: 1px solid #30363d;
+      border-radius: 8px;
+      padding: 12px 16px;
+      margin-bottom: 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .source-banner a { color: #2f81f7; text-decoration: none; font-size: 14px; font-weight: 600; }
     .news-card {
       background: #161b22;
       border: 1px solid #30363d;
       border-radius: 8px;
       padding: 16px;
-      margin-bottom: 16px;
-      transition: transform 0.2s ease;
+      margin-bottom: 14px;
+      transition: transform 0.2s ease, border-color 0.2s ease;
     }
     .news-card:hover { transform: translateY(-2px); border-color: #58a6ff; }
-    .news-meta { font-size: 12px; color: #8b949e; margin-bottom: 8px; display: block; }
-    .news-title { font-size: 18px; margin: 0; color: #f0f6fc; text-decoration: none; display: block; }
+    .news-meta { font-size: 12px; color: #8b949e; margin-bottom: 6px; display: block; }
+    .news-title { font-size: 16px; margin: 0; color: #f0f6fc; text-decoration: none; display: block; line-height: 1.4; }
     .news-title:hover { color: #58a6ff; }
     #loader { color: #8b949e; font-style: italic; }
   </style>
 </head>
 <body>
 
-  <h1>Automotive & Industry Live News</h1>
+  <h1>Ather Intelligence Desk</h1>
+
+  <!-- Vahan Quick Shortcut because Vahan blocks automated web scraping -->
+  <div class="source-banner">
+    <span>📊 <strong>Vahan Dashboard:</strong> Real-time EV registration metrics</span>
+    <a href="https://vahan.parivahan.gov.in/vahan4dashboard/" target="_blank" rel="noopener">Open Vahan Portal ↗</a>
+  </div>
+
   <div id="news-container">
-    <p id="loader">Fetching latest news from sources...</p>
+    <p id="loader">Fetching updates across BSE, X, IR, and news portals...</p>
   </div>
 
   <script>
-    // 1. Add your favorite RSS Feed URLs here
     const FEEDS = [
-      'https://www.autocarindia.com/rss/news',
-      'https://www.bikewale.com/rss/news/'
+      // 1. BSE & Corporate Announcements
+      { name: 'BSE Disclosures', url: 'https://news.google.com/rss/search?q=Ather+Energy+BSE+OR+filing+OR+disclosure&hl=en-IN&gl=IN&ceid=IN:en' },
+      
+      // 2. CEO Tarun Mehta Updates (via Nitter RSS bridge)
+      { name: 'Tarun Mehta (X)', url: 'https://nitter.net/tarunsmehta/rss' },
+
+      // 3. Ather Investor Relations & Corporate News
+      { name: 'Investor Relations & Press', url: 'https://news.google.com/rss/search?q=Ather+Energy+investor+relations+OR+financial+results&hl=en-IN&gl=IN&ceid=IN:en' },
+
+      // 4. Ather OTA Software & Product Updates
+      { name: 'OTA & Product Updates', url: 'https://news.google.com/rss/search?q=Atherstack+OR+"Ather+OTA"+OR+"Ather+update"&hl=en-IN&gl=IN&ceid=IN:en' },
+
+      // 5. Financial & Screener Coverage
+      { name: 'Screener & Valuation', url: 'https://news.google.com/rss/search?q=Ather+Energy+screener+OR+valuation+OR+revenue&hl=en-IN&gl=IN&ceid=IN:en' }
     ];
 
     async function loadLiveNews() {
       const container = document.getElementById('news-container');
       let allArticles = [];
 
-      for (const url of FEEDS) {
+      for (const feed of FEEDS) {
         try {
-          // Convert RSS XML to clean JSON using rss2json API
-          const response = await fetch(`https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(url)}`);
+          const response = await fetch(`https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(feed.url)}`);
           const data = await response.json();
 
           if (data.status === 'ok') {
@@ -59,33 +87,34 @@
                 title: item.title,
                 link: item.link,
                 pubDate: new Date(item.pubDate),
-                source: data.feed.title || 'Auto News'
+                sourceName: feed.name
               });
             });
           }
         } catch (err) {
-          console.error("Failed to load feed:", url, err);
+          console.error("Error fetching:", feed.name, err);
         }
       }
 
-      // Sort all combined articles by newest first
+      // Sort by newest first
       allArticles.sort((a, b) => b.pubDate - a.pubDate);
 
       if (allArticles.length === 0) {
-        container.innerHTML = '<p>Unable to load news right now.</p>';
+        container.innerHTML = '<p>Unable to load news right now. Please try again in a few moments.</p>';
         return;
       }
 
-      // Render top 15 latest articles
-      container.innerHTML = allArticles.slice(0, 15).map(article => `
+      // Render top 20 items
+      container.innerHTML = allArticles.slice(0, 20).map(article => `
         <div class="news-card">
-          <span class="news-meta">${article.source} • ${article.pubDate.toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })}</span>
+          <span class="news-meta">
+            <strong>${article.sourceName}</strong> • ${article.pubDate.toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })}
+          </span>
           <a class="news-title" href="${article.link}" target="_blank" rel="noopener">${article.title}</a>
         </div>
       `).join('');
     }
 
-    // Automatically trigger on page load
     loadLiveNews();
   </script>
 </body>
