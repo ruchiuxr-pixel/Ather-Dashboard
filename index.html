@@ -3,77 +3,168 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Ather Energy Intelligence Desk</title>
+  <title>Ather Intelligence Newsmap</title>
+
+  <!-- Fira Sans Google Font -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
   <style>
-    body {
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-      background-color: #0d1117;
-      color: #c9d1d9;
-      max-width: 850px;
-      margin: 40px auto;
-      padding: 0 20px;
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
     }
-    h1 { color: #58a6ff; font-size: 24px; border-bottom: 1px solid #30363d; padding-bottom: 12px; }
-    .source-banner {
-      background: #161b22;
-      border: 1px solid #30363d;
-      border-radius: 8px;
-      padding: 12px 16px;
-      margin-bottom: 24px;
+
+    body {
+      font-family: 'Fira Sans', sans-serif;
+      background-color: #111;
+      color: #fff;
+      padding: 16px;
+      min-height: 100vh;
+    }
+
+    /* Page Header */
+    header {
       display: flex;
       justify-content: space-between;
       align-items: center;
+      padding-bottom: 16px;
+      margin-bottom: 16px;
+      border-bottom: 1px solid #222;
     }
-    .source-banner a { color: #2f81f7; text-decoration: none; font-size: 14px; font-weight: 600; }
-    .news-card {
-      background: #161b22;
-      border: 1px solid #30363d;
-      border-radius: 8px;
-      padding: 16px;
-      margin-bottom: 14px;
-      transition: transform 0.2s ease, border-color 0.2s ease;
+
+    h1 {
+      font-size: 24px;
+      font-weight: 700;
+      letter-spacing: -0.5px;
+      color: #ffffff;
+      font-family: 'Fira Sans', sans-serif;
     }
-    .news-card:hover { transform: translateY(-2px); border-color: #58a6ff; }
-    .news-meta { font-size: 12px; color: #8b949e; margin-bottom: 6px; display: block; }
-    .news-title { font-size: 16px; margin: 0; color: #f0f6fc; text-decoration: none; display: block; line-height: 1.4; }
-    .news-title:hover { color: #58a6ff; }
-    #loader { color: #8b949e; font-style: italic; }
+
+    .vahan-btn {
+      background: #00875a;
+      color: #fff;
+      font-size: 13px;
+      font-weight: 600;
+      padding: 8px 14px;
+      border-radius: 4px;
+      text-decoration: none;
+      transition: background 0.2s ease;
+    }
+    .vahan-btn:hover {
+      background: #00b377;
+    }
+
+    /* Newsmap Treemap / Dense Grid Layout */
+    .newsmap-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+      grid-auto-rows: minmax(130px, auto);
+      gap: 6px;
+    }
+
+    /* Newsmap Block Styles */
+    .news-tile {
+      background-color: #1c1c1e;
+      border-radius: 4px;
+      padding: 12px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      text-decoration: none;
+      color: #ddd;
+      overflow: hidden;
+      position: relative;
+      border: 1px solid #29292c;
+      transition: all 0.15s ease;
+    }
+
+    /* Newsmap Source-based Color Accents */
+    .news-tile[data-source="BSE Disclosures"] { background-color: #1a2733; border-color: #2b4156; }
+    .news-tile[data-source="BSE Disclosures"]:hover { border-color: #3b82f6; }
+
+    .news-tile[data-source="Investor Relations & Press"] { background-color: #1b2820; border-color: #273c30; }
+    .news-tile[data-source="Investor Relations & Press"]:hover { border-color: #22c55e; }
+
+    .news-tile[data-source="OTA & Product Updates"] { background-color: #281d2d; border-color: #402c49; }
+    .news-tile[data-source="OTA & Product Updates"]:hover { border-color: #a855f7; }
+
+    .news-tile[data-source="Screener & Valuation"] { background-color: #2b2318; border-color: #443724; }
+    .news-tile[data-source="Screener & Valuation"]:hover { border-color: #f59e0b; }
+
+    .news-tile[data-source="Tarun Mehta (X)"] { background-color: #15222b; border-color: #1f3645; }
+    .news-tile[data-source="Tarun Mehta (X)"]:hover { border-color: #0ea5e9; }
+
+    .news-tile:hover {
+      transform: scale(1.01);
+      z-index: 2;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+    }
+
+    /* Tile Typography */
+    .tile-title {
+      font-size: 14px;
+      font-weight: 500;
+      line-height: 1.35;
+      color: #f0f0f0;
+      display: -webkit-box;
+      -webkit-line-clamp: 4;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    .tile-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 11px;
+      font-weight: 400;
+      color: #888;
+      margin-top: 10px;
+      padding-top: 6px;
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .tile-source {
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.4px;
+    }
+
+    /* Loading Indicator */
+    #loader {
+      font-size: 15px;
+      color: #888;
+      grid-column: 1 / -1;
+      padding: 40px 0;
+      text-align: center;
+    }
   </style>
 </head>
 <body>
 
-  <h1>Ather Intelligence Desk</h1>
+  <header>
+    <h1>Ather Energy Intelligence Desk</h1>
+    <a href="https://vahan.parivahan.gov.in/vahan4dashboard/" target="_blank" rel="noopener" class="vahan-btn">📊 Open Vahan Dashboard ↗</a>
+  </header>
 
-  <!-- Vahan Quick Shortcut because Vahan blocks automated web scraping -->
-  <div class="source-banner">
-    <span>📊 <strong>Vahan Dashboard:</strong> Real-time EV registration metrics</span>
-    <a href="https://vahan.parivahan.gov.in/vahan4dashboard/" target="_blank" rel="noopener">Open Vahan Portal ↗</a>
-  </div>
-
-  <div id="news-container">
-    <p id="loader">Fetching updates across BSE, X, IR, and news portals...</p>
+  <div class="newsmap-grid" id="newsmap-container">
+    <div id="loader">Fetching latest news and disclosures...</div>
   </div>
 
   <script>
     const FEEDS = [
-      // 1. BSE & Corporate Announcements
       { name: 'BSE Disclosures', url: 'https://news.google.com/rss/search?q=Ather+Energy+BSE+OR+filing+OR+disclosure&hl=en-IN&gl=IN&ceid=IN:en' },
-      
-      // 2. CEO Tarun Mehta Updates (via Nitter RSS bridge)
       { name: 'Tarun Mehta (X)', url: 'https://nitter.net/tarunsmehta/rss' },
-
-      // 3. Ather Investor Relations & Corporate News
       { name: 'Investor Relations & Press', url: 'https://news.google.com/rss/search?q=Ather+Energy+investor+relations+OR+financial+results&hl=en-IN&gl=IN&ceid=IN:en' },
-
-      // 4. Ather OTA Software & Product Updates
       { name: 'OTA & Product Updates', url: 'https://news.google.com/rss/search?q=Atherstack+OR+"Ather+OTA"+OR+"Ather+update"&hl=en-IN&gl=IN&ceid=IN:en' },
-
-      // 5. Financial & Screener Coverage
       { name: 'Screener & Valuation', url: 'https://news.google.com/rss/search?q=Ather+Energy+screener+OR+valuation+OR+revenue&hl=en-IN&gl=IN&ceid=IN:en' }
     ];
 
-    async function loadLiveNews() {
-      const container = document.getElementById('news-container');
+    async function renderNewsmap() {
+      const container = document.getElementById('newsmap-container');
       let allArticles = [];
 
       for (const feed of FEEDS) {
@@ -92,30 +183,32 @@
             });
           }
         } catch (err) {
-          console.error("Error fetching:", feed.name, err);
+          console.error("Error fetching feed:", feed.name, err);
         }
       }
 
-      // Sort by newest first
+      // Sort chronological (Newest first)
       allArticles.sort((a, b) => b.pubDate - a.pubDate);
 
       if (allArticles.length === 0) {
-        container.innerHTML = '<p>Unable to load news right now. Please try again in a few moments.</p>';
+        container.innerHTML = '<div id="loader">Unable to fetch live feeds right now.</div>';
         return;
       }
 
-      // Render top 20 items
-      container.innerHTML = allArticles.slice(0, 20).map(article => `
-        <div class="news-card">
-          <span class="news-meta">
-            <strong>${article.sourceName}</strong> • ${article.pubDate.toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })}
-          </span>
-          <a class="news-title" href="${article.link}" target="_blank" rel="noopener">${article.title}</a>
-        </div>
+      // Render Newsmap Cards
+      container.innerHTML = allArticles.slice(0, 24).map(article => `
+        <a class="news-tile" href="${article.link}" target="_blank" rel="noopener" data-source="${article.sourceName}">
+          <div class="tile-title">${article.title}</div>
+          <div class="tile-meta">
+            <span class="tile-source">${article.sourceName}</span>
+            <span class="tile-date">${article.pubDate.toLocaleDateString('en-IN', { day: 'numeric', month: 'short' })}</span>
+          </div>
+        </a>
       `).join('');
     }
 
-    loadLiveNews();
+    renderNewsmap();
   </script>
+
 </body>
 </html>
