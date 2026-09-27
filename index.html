@@ -5,6 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Ather Energy Desk</title>
 
+  <!-- RSS Feed Auto-Discovery Link -->
+  <link rel="alternate" type="application/rss+xml" title="Ather Energy Desk RSS Feed" href="https://ruchiuxr-pixel.github.io/Ather-Dashboard/feed.xml">
+
   <!-- Fira Sans Google Font -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -19,11 +22,11 @@
 
     body {
       font-family: 'Fira Sans', sans-serif;
-      font-size: 20px; /* STRICT 20px TYPEFACE SIZE */
+      font-size: 20px;
       line-height: 1.3;
       background-color: #0d0d0e;
       color: #f0f0f0;
-      padding: 50px 100px 100px 100px; /* Top Margin 50px */
+      padding: 50px 100px 100px 100px;
       min-height: 100vh;
     }
 
@@ -39,11 +42,31 @@
       border-bottom: 1px solid #222;
     }
 
+    .brand-title-group {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
     .brand-title {
       font-size: 20px;
       font-weight: 700;
       color: #ffffff;
       letter-spacing: -0.3px;
+    }
+
+    /* RSS Icon/Button in Header */
+    .rss-link {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      color: #ff6600;
+      text-decoration: none;
+      font-size: 20px;
+      transition: transform 0.15s ease;
+    }
+    .rss-link:hover {
+      transform: scale(1.15);
     }
 
     /* Market Metrics Bar */
@@ -75,7 +98,7 @@
       font-size: 20px;
     }
 
-    /* Vahan Button - No Green Background */
+    /* Vahan Button */
     .vahan-btn {
       background: transparent;
       color: #f0f0f0;
@@ -96,22 +119,22 @@
       border-color: #555;
     }
 
-    /* Newsmap Responsive Grid - No Gutter */
+    /* Newsmap Responsive Grid */
     .newsmap-grid {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
       grid-auto-rows: auto;
-      gap: 0px; /* No gutter */
+      gap: 0px;
       border: 1px solid #222;
     }
 
-    /* Article Card Base - Vertical Information Stack */
+    /* Article Card Base */
     .news-tile {
       background-color: #161618;
       border: 1px solid #222225;
       padding: 20px;
       display: flex;
-      flex-direction: column; /* Stack all elements top-to-bottom */
+      flex-direction: column;
       justify-content: flex-start;
       align-items: flex-start;
       text-decoration: none;
@@ -127,7 +150,7 @@
       outline: 2px solid #58a6ff;
     }
 
-    /* Card Details Stack (One by One) */
+    /* Card Details Stack */
     .category-badge {
       font-size: 20px;
       font-weight: 700;
@@ -180,7 +203,7 @@
     .news-tile[data-source="CEO & Leadership"] { background-color: #0c1a24; }
     .news-tile[data-source="CEO & Leadership"] .category-badge { color: #0ea5e9; }
 
-    /* Read State (Reduced Opacity & Color) */
+    /* Read State */
     .news-tile.is-read {
       background-color: #111113 !important;
       opacity: 0.35;
@@ -200,29 +223,25 @@
       text-align: center;
     }
 
-    /* Responsive Adjustments */
     @media (max-width: 1024px) {
-      body {
-        padding: 50px 30px 50px 30px;
-      }
+      body { padding: 50px 30px 50px 30px; }
     }
 
     @media (max-width: 640px) {
-      body {
-        padding: 30px 15px 30px 15px;
-      }
-      .newsmap-grid {
-        grid-template-columns: 1fr;
-      }
+      body { padding: 30px 15px 30px 15px; }
+      .newsmap-grid { grid-template-columns: 1fr; }
     }
   </style>
 </head>
 <body>
 
   <header>
-    <div class="brand-title">Ather Energy Desk</div>
+    <div class="brand-title-group">
+      <div class="brand-title">Ather Energy Desk</div>
+      <!-- RSS Direct Link -->
+      <a href="feed.xml" target="_blank" class="rss-link" title="RSS Feed">📡</a>
+    </div>
 
-    <!-- Live Market Cap & Current Stock Price -->
     <div class="market-stats">
       <div class="stat-box">
         <span class="stat-label">Market Cap:</span>
@@ -232,14 +251,12 @@
         <span class="stat-label">Live Price:</span>
         <span class="stat-value">₹1,497.00</span>
       </div>
-      <!-- Vahan Dashboard Button without Green Background -->
       <a href="https://vahan.parivahan.gov.in/vahan4dashboard/" target="_blank" rel="noopener" class="vahan-btn">
         Vahan Dashboard ↗
       </a>
     </div>
   </header>
 
-  <!-- Newsmap Grid -->
   <div class="newsmap-grid" id="newsmap-container">
     <div id="loader">Fetching 1-year news archive...</div>
   </div>
@@ -253,7 +270,6 @@
       { name: 'Valuation & Screener', tag: 'Valuation & Finance', url: 'https://news.google.com/rss/search?q=Ather+Energy+screener+OR+valuation+OR+revenue+when:1y&hl=en-IN&gl=IN&ceid=IN:en' }
     ];
 
-    // Persistent Local Storage for Read Articles
     function getReadArticles() {
       return JSON.parse(localStorage.getItem('ather_desk_read_articles') || '[]');
     }
@@ -294,7 +310,6 @@
         }
       }
 
-      // Sort by newest date
       allArticles.sort((a, b) => b.pubDate - a.pubDate);
 
       if (allArticles.length === 0) {
@@ -302,10 +317,8 @@
         return;
       }
 
-      // Render Cards Stacked One-by-One Vertically
       container.innerHTML = allArticles.map(article => {
         const isRead = readArticles.includes(article.link) ? 'is-read' : '';
-        // Explicitly format date including full YEAR (e.g. 27 Sep 2026)
         const formattedDate = article.pubDate.toLocaleDateString('en-IN', { 
           day: 'numeric', 
           month: 'short', 
