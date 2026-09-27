@@ -3,12 +3,12 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Ather Energy Intelligence Desk</title>
+  <title>Ather Energy Newsmap</title>
 
   <!-- Fira Sans Google Font -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Fira+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
   <style>
     * {
@@ -19,97 +19,160 @@
 
     body {
       font-family: 'Fira Sans', sans-serif;
+      font-size: 25px; /* STRICT SINGLE TYPEFACE SIZE */
+      line-height: 1.25;
       background-color: #0d0d0e;
-      color: #fff;
-      padding: 100px; /* 100px outer page margin */
+      color: #f0f0f0;
+      padding: 100px; /* 100px Page Outer Margin */
       min-height: 100vh;
     }
 
-    /* Top Navigation & Ticker Header */
+    /* Page Header */
     header {
       display: flex;
+      flex-wrap: wrap;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 24px;
-      padding-bottom: 16px;
-      border-bottom: 1px solid #222;
+      gap: 25px;
+      margin-bottom: 50px;
+      padding-bottom: 25px;
+      border-bottom: 2px solid #222;
     }
 
     .brand-title {
-      font-size: 30px; /* 30px Type size */
+      font-size: 25px;
       font-weight: 700;
-      letter-spacing: -0.5px;
       color: #ffffff;
+      letter-spacing: -0.5px;
     }
 
+    /* Market Metrics Bar */
     .market-stats {
       display: flex;
+      flex-wrap: wrap;
       align-items: center;
-      gap: 20px;
-      font-size: 13px;
+      gap: 25px;
     }
 
     .stat-box {
       background: #18181b;
       border: 1px solid #27272a;
-      padding: 6px 12px;
+      padding: 12px 20px;
       border-radius: 4px;
       display: flex;
-      gap: 8px;
+      gap: 12px;
     }
 
     .stat-label {
       color: #888;
       font-weight: 400;
+      font-size: 25px;
     }
 
     .stat-value {
       color: #00b377;
       font-weight: 600;
+      font-size: 25px;
     }
 
     .vahan-btn {
       background: #00875a;
       color: #fff;
-      font-size: 13px;
+      font-size: 25px;
       font-weight: 600;
-      padding: 8px 14px;
+      padding: 12px 20px;
       border-radius: 4px;
       text-decoration: none;
-      transition: background 0.2s ease;
+      cursor: pointer;
+      display: inline-block;
     }
-    .vahan-btn:hover { background: #00b377; }
 
-    /* Newsmap Grid Container - No Gutter */
+    /* Newsmap Responsive Grid - Zero Gutter */
     .newsmap-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
-      grid-auto-rows: minmax(130px, auto);
-      gap: 0px; /* No gutter between cards */
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      grid-auto-rows: minmax(240px, auto);
+      gap: 0px; /* Zero gutter between cards */
       border: 1px solid #222;
     }
 
-    /* News Tile Base Style */
+    /* Article Tile Base Style */
     .news-tile {
       background-color: #161618;
       border: 1px solid #222225;
-      padding: 12px;
+      padding: 25px;
       display: flex;
       flex-direction: column;
       justify-content: space-between;
       text-decoration: none;
-      color: #ddd;
-      overflow: hidden;
+      color: #eee;
+      cursor: pointer;
       position: relative;
-      transition: all 0.2s ease;
+      transition: background 0.15s ease, opacity 0.2s ease;
     }
 
     .news-tile:hover {
       z-index: 10;
+      background-color: #1f1f22;
       outline: 2px solid #58a6ff;
     }
 
-    /* Read Article Dimmed State */
+    /* Category Badge */
+    .category-badge {
+      font-size: 25px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 25px;
+      display: block;
+    }
+
+    /* Category Source Accents */
+    .news-tile[data-source="BSE Disclosures"] { background-color: #0f1c28; }
+    .news-tile[data-source="BSE Disclosures"] .category-badge { color: #3b82f6; }
+
+    .news-tile[data-source="Investor Relations"] { background-color: #0e2216; }
+    .news-tile[data-source="Investor Relations"] .category-badge { color: #22c55e; }
+
+    .news-tile[data-source="Software & OTA"] { background-color: #211326; }
+    .news-tile[data-source="Software & OTA"] .category-badge { color: #a855f7; }
+
+    .news-tile[data-source="Valuation & Screener"] { background-color: #241b0e; }
+    .news-tile[data-source="Valuation & Screener"] .category-badge { color: #f59e0b; }
+
+    .news-tile[data-source="CEO & Leadership"] { background-color: #0c1a24; }
+    .news-tile[data-source="CEO & Leadership"] .category-badge { color: #0ea5e9; }
+
+    /* Headline Styling */
+    .tile-title {
+      font-size: 25px;
+      font-weight: 500;
+      color: #ffffff;
+      display: -webkit-box;
+      -webkit-line-clamp: 4;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      margin-bottom: 25px;
+    }
+
+    /* Metadata Container */
+    .tile-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 25px;
+      color: #888;
+      margin-top: auto;
+      padding-top: 25px;
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .tile-publisher {
+      font-weight: 400;
+      color: #aaa;
+    }
+
+    /* Read State (Reduced Color & Lower Opacity) */
     .news-tile.is-read {
       background-color: #111113 !important;
       opacity: 0.35;
@@ -121,73 +184,37 @@
       text-decoration: line-through;
     }
 
-    /* Category Badge */
-    .category-badge {
-      font-size: 10px;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.8px;
-      margin-bottom: 6px;
-      display: inline-block;
-    }
-
-    /* Source-Based Color Profiles */
-    .news-tile[data-source="BSE Disclosures"] { background-color: #0f1c28; }
-    .news-tile[data-source="BSE Disclosures"] .category-badge { color: #3b82f6; }
-
-    .news-tile[data-source="Investor Relations & Press"] { background-color: #0e2216; }
-    .news-tile[data-source="Investor Relations & Press"] .category-badge { color: #22c55e; }
-
-    .news-tile[data-source="OTA & Product Updates"] { background-color: #211326; }
-    .news-tile[data-source="OTA & Product Updates"] .category-badge { color: #a855f7; }
-
-    .news-tile[data-source="Screener & Valuation"] { background-color: #241b0e; }
-    .news-tile[data-source="Screener & Valuation"] .category-badge { color: #f59e0b; }
-
-    .news-tile[data-source="Tarun Mehta (X)"] { background-color: #0c1a24; }
-    .news-tile[data-source="Tarun Mehta (X)"] .category-badge { color: #0ea5e9; }
-
-    /* Headline Typography */
-    .tile-title {
-      font-size: 13px;
-      font-weight: 500;
-      line-height: 1.35;
-      color: #f0f0f0;
-      display: -webkit-box;
-      -webkit-line-clamp: 4;
-      -webkit-box-orient: vertical;
-      overflow: hidden;
-    }
-
-    /* Tile Footer */
-    .tile-meta {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      font-size: 10px;
-      color: #666;
-      margin-top: 10px;
-      padding-top: 4px;
-      border-top: 1px solid rgba(255, 255, 255, 0.05);
-    }
-
     #loader {
-      font-size: 15px;
+      font-size: 25px;
       color: #888;
       grid-column: 1 / -1;
-      padding: 60px 0;
+      padding: 100px 0;
       text-align: center;
+    }
+
+    /* Responsive Breakdown for Smaller Displays */
+    @media (max-width: 1024px) {
+      body {
+        padding: 50px;
+      }
+    }
+
+    @media (max-width: 640px) {
+      body {
+        padding: 25px;
+      }
+      .newsmap-grid {
+        grid-template-columns: 1fr;
+      }
     }
   </style>
 </head>
 <body>
 
   <header>
-    <div>
-      <h1 class="brand-title">Ather Energy Intelligence Desk</h1>
-    </div>
+    <div class="brand-title">Ather Energy Intelligence Desk</div>
 
-    <!-- Live Market Cap & Stock Price Widget -->
+    <!-- Live Market Cap & Current Stock Price -->
     <div class="market-stats">
       <div class="stat-box">
         <span class="stat-label">Market Cap:</span>
@@ -197,34 +224,35 @@
         <span class="stat-label">Live Price:</span>
         <span class="stat-value">₹1,497.00</span>
       </div>
-      <a href="https://vahan.parivahan.gov.in/vahan4dashboard/" target="_blank" rel="noopener" class="vahan-btn">📊 Vahan Dashboard ↗</a>
+      <a href="https://vahan.parivahan.gov.in/vahan4dashboard/" target="_blank" rel="noopener" class="vahan-btn">Vahan Dashboard</a>
     </div>
   </header>
 
   <!-- Newsmap Container -->
   <div class="newsmap-grid" id="newsmap-container">
-    <div id="loader">Fetching latest category feeds...</div>
+    <div id="loader">Fetching 1-year news and market disclosures...</div>
   </div>
 
   <script>
+    // Feeds configured for 1-year depth (when:1y)
     const FEEDS = [
-      { name: 'BSE Disclosures', tag: 'BSE Filing', url: 'https://news.google.com/rss/search?q=Ather+Energy+BSE+OR+filing+OR+disclosure&hl=en-IN&gl=IN&ceid=IN:en' },
-      { name: 'Tarun Mehta (X)', tag: 'CEO Updates', url: 'https://nitter.net/tarunsmehta/rss' },
-      { name: 'Investor Relations & Press', tag: 'Investor Rel', url: 'https://news.google.com/rss/search?q=Ather+Energy+investor+relations+OR+financial+results&hl=en-IN&gl=IN&ceid=IN:en' },
-      { name: 'OTA & Product Updates', tag: 'Software & OTA', url: 'https://news.google.com/rss/search?q=Atherstack+OR+"Ather+OTA"+OR+"Ather+update"&hl=en-IN&gl=IN&ceid=IN:en' },
-      { name: 'Screener & Valuation', tag: 'Valuation & Finance', url: 'https://news.google.com/rss/search?q=Ather+Energy+screener+OR+valuation+OR+revenue&hl=en-IN&gl=IN&ceid=IN:en' }
+      { name: 'BSE Disclosures', tag: 'BSE Filing', url: 'https://news.google.com/rss/search?q=Ather+Energy+BSE+OR+filing+when:1y&hl=en-IN&gl=IN&ceid=IN:en' },
+      { name: 'CEO & Leadership', tag: 'CEO Updates', url: 'https://news.google.com/rss/search?q=Tarun+Mehta+Ather+when:1y&hl=en-IN&gl=IN&ceid=IN:en' },
+      { name: 'Investor Relations', tag: 'Investor Rel', url: 'https://news.google.com/rss/search?q=Ather+Energy+investor+relations+OR+financial+results+when:1y&hl=en-IN&gl=IN&ceid=IN:en' },
+      { name: 'Software & OTA', tag: 'Software & OTA', url: 'https://news.google.com/rss/search?q=Atherstack+OR+"Ather+OTA"+OR+"Ather+update"+when:1y&hl=en-IN&gl=IN&ceid=IN:en' },
+      { name: 'Valuation & Screener', tag: 'Valuation & Finance', url: 'https://news.google.com/rss/search?q=Ather+Energy+screener+OR+valuation+OR+revenue+when:1y&hl=en-IN&gl=IN&ceid=IN:en' }
     ];
 
-    // Local Storage Read Tracking Logic
+    // Local Storage Read Tracking
     function getReadArticles() {
-      return JSON.parse(localStorage.getItem('ather_read_articles') || '[]');
+      return JSON.parse(localStorage.getItem('ather_read_articles_25px') || '[]');
     }
 
     function markAsRead(articleLink, element) {
       const readArticles = getReadArticles();
       if (!readArticles.includes(articleLink)) {
         readArticles.push(articleLink);
-        localStorage.setItem('ather_read_articles', JSON.stringify(readArticles));
+        localStorage.setItem('ather_read_articles_25px', JSON.stringify(readArticles));
       }
       element.classList.add('is-read');
     }
@@ -246,7 +274,8 @@
                 link: item.link,
                 pubDate: new Date(item.pubDate),
                 sourceName: feed.name,
-                categoryTag: feed.tag
+                categoryTag: feed.tag,
+                publisher: item.author || feed.name
               });
             });
           }
@@ -255,7 +284,7 @@
         }
       }
 
-      // Sort by newest first
+      // Chronological Sorting (Newest to Oldest)
       allArticles.sort((a, b) => b.pubDate - a.pubDate);
 
       if (allArticles.length === 0) {
@@ -263,8 +292,11 @@
         return;
       }
 
-      container.innerHTML = allArticles.slice(0, 32).map(article => {
+      // Render items with persistent read states
+      container.innerHTML = allArticles.map(article => {
         const isRead = readArticles.includes(article.link) ? 'is-read' : '';
+        const formattedDate = article.pubDate.toLocaleDateString('en-IN', { day: 'numeric', month: 'short' });
+
         return `
           <a class="news-tile ${isRead}" 
              href="${article.link}" 
@@ -277,7 +309,8 @@
               <div class="tile-title">${article.title}</div>
             </div>
             <div class="tile-meta">
-              <span>${article.pubDate.toLocaleDateString('en-IN', { day: 'numeric', month: 'short' })}</span>
+              <span class="tile-publisher">${article.publisher}</span>
+              <span>${formattedDate}</span>
             </div>
           </a>
         `;
