@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<rss version="2.0">
+<channel>
+  <title>Ather Energy Desk</title>
+  <link>https://ruchiuxr-pixel.github.io/Ather-Dashboard/</link>
+  <description>Market tracking dashboard and news aggregator for Ather Energy metrics.</description>
+  <language>en-in</language>
+  
+  <item>
+    <title>Ather Energy Dashboard Updates</title>
+    <link>https://ruchiuxr-pixel.github.io/Ather-Dashboard/</link>
+    <description>Latest regulatory filings, stock performance, and OTA updates for Ather Energy.</description>
+    <pubDate>Sun, 27 Sep 2026 12:00:00 GMT</pubDate>
+  </item>
+</channel>
+</rss>
