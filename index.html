@@ -3,12 +3,12 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Ather Intelligence Newsmap</title>
+  <title>Ather Energy Intelligence Desk</title>
 
   <!-- Fira Sans Google Font -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Fira+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
 
   <style>
     * {
@@ -19,28 +19,53 @@
 
     body {
       font-family: 'Fira Sans', sans-serif;
-      background-color: #111;
+      background-color: #0d0d0e;
       color: #fff;
-      padding: 16px;
+      padding: 100px; /* 100px outer page margin */
       min-height: 100vh;
     }
 
-    /* Page Header */
+    /* Top Navigation & Ticker Header */
     header {
       display: flex;
       justify-content: space-between;
       align-items: center;
+      margin-bottom: 24px;
       padding-bottom: 16px;
-      margin-bottom: 16px;
       border-bottom: 1px solid #222;
     }
 
-    h1 {
-      font-size: 24px;
+    .brand-title {
+      font-size: 30px; /* 30px Type size */
       font-weight: 700;
       letter-spacing: -0.5px;
       color: #ffffff;
-      font-family: 'Fira Sans', sans-serif;
+    }
+
+    .market-stats {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      font-size: 13px;
+    }
+
+    .stat-box {
+      background: #18181b;
+      border: 1px solid #27272a;
+      padding: 6px 12px;
+      border-radius: 4px;
+      display: flex;
+      gap: 8px;
+    }
+
+    .stat-label {
+      color: #888;
+      font-weight: 400;
+    }
+
+    .stat-value {
+      color: #00b377;
+      font-weight: 600;
     }
 
     .vahan-btn {
@@ -53,22 +78,21 @@
       text-decoration: none;
       transition: background 0.2s ease;
     }
-    .vahan-btn:hover {
-      background: #00b377;
-    }
+    .vahan-btn:hover { background: #00b377; }
 
-    /* Newsmap Treemap / Dense Grid Layout */
+    /* Newsmap Grid Container - No Gutter */
     .newsmap-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+      grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
       grid-auto-rows: minmax(130px, auto);
-      gap: 6px;
+      gap: 0px; /* No gutter between cards */
+      border: 1px solid #222;
     }
 
-    /* Newsmap Block Styles */
+    /* News Tile Base Style */
     .news-tile {
-      background-color: #1c1c1e;
-      border-radius: 4px;
+      background-color: #161618;
+      border: 1px solid #222225;
       padding: 12px;
       display: flex;
       flex-direction: column;
@@ -77,35 +101,55 @@
       color: #ddd;
       overflow: hidden;
       position: relative;
-      border: 1px solid #29292c;
-      transition: all 0.15s ease;
+      transition: all 0.2s ease;
     }
-
-    /* Newsmap Source-based Color Accents */
-    .news-tile[data-source="BSE Disclosures"] { background-color: #1a2733; border-color: #2b4156; }
-    .news-tile[data-source="BSE Disclosures"]:hover { border-color: #3b82f6; }
-
-    .news-tile[data-source="Investor Relations & Press"] { background-color: #1b2820; border-color: #273c30; }
-    .news-tile[data-source="Investor Relations & Press"]:hover { border-color: #22c55e; }
-
-    .news-tile[data-source="OTA & Product Updates"] { background-color: #281d2d; border-color: #402c49; }
-    .news-tile[data-source="OTA & Product Updates"]:hover { border-color: #a855f7; }
-
-    .news-tile[data-source="Screener & Valuation"] { background-color: #2b2318; border-color: #443724; }
-    .news-tile[data-source="Screener & Valuation"]:hover { border-color: #f59e0b; }
-
-    .news-tile[data-source="Tarun Mehta (X)"] { background-color: #15222b; border-color: #1f3645; }
-    .news-tile[data-source="Tarun Mehta (X)"]:hover { border-color: #0ea5e9; }
 
     .news-tile:hover {
-      transform: scale(1.01);
-      z-index: 2;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+      z-index: 10;
+      outline: 2px solid #58a6ff;
     }
 
-    /* Tile Typography */
+    /* Read Article Dimmed State */
+    .news-tile.is-read {
+      background-color: #111113 !important;
+      opacity: 0.35;
+      filter: grayscale(80%);
+    }
+
+    .news-tile.is-read .tile-title {
+      color: #777 !important;
+      text-decoration: line-through;
+    }
+
+    /* Category Badge */
+    .category-badge {
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      margin-bottom: 6px;
+      display: inline-block;
+    }
+
+    /* Source-Based Color Profiles */
+    .news-tile[data-source="BSE Disclosures"] { background-color: #0f1c28; }
+    .news-tile[data-source="BSE Disclosures"] .category-badge { color: #3b82f6; }
+
+    .news-tile[data-source="Investor Relations & Press"] { background-color: #0e2216; }
+    .news-tile[data-source="Investor Relations & Press"] .category-badge { color: #22c55e; }
+
+    .news-tile[data-source="OTA & Product Updates"] { background-color: #211326; }
+    .news-tile[data-source="OTA & Product Updates"] .category-badge { color: #a855f7; }
+
+    .news-tile[data-source="Screener & Valuation"] { background-color: #241b0e; }
+    .news-tile[data-source="Screener & Valuation"] .category-badge { color: #f59e0b; }
+
+    .news-tile[data-source="Tarun Mehta (X)"] { background-color: #0c1a24; }
+    .news-tile[data-source="Tarun Mehta (X)"] .category-badge { color: #0ea5e9; }
+
+    /* Headline Typography */
     .tile-title {
-      font-size: 14px;
+      font-size: 13px;
       font-weight: 500;
       line-height: 1.35;
       color: #f0f0f0;
@@ -115,30 +159,23 @@
       overflow: hidden;
     }
 
+    /* Tile Footer */
     .tile-meta {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      font-size: 11px;
-      font-weight: 400;
-      color: #888;
+      font-size: 10px;
+      color: #666;
       margin-top: 10px;
-      padding-top: 6px;
-      border-top: 1px solid rgba(255, 255, 255, 0.08);
+      padding-top: 4px;
+      border-top: 1px solid rgba(255, 255, 255, 0.05);
     }
 
-    .tile-source {
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 0.4px;
-    }
-
-    /* Loading Indicator */
     #loader {
       font-size: 15px;
       color: #888;
       grid-column: 1 / -1;
-      padding: 40px 0;
+      padding: 60px 0;
       text-align: center;
     }
   </style>
@@ -146,25 +183,55 @@
 <body>
 
   <header>
-    <h1>Ather Energy Intelligence Desk</h1>
-    <a href="https://vahan.parivahan.gov.in/vahan4dashboard/" target="_blank" rel="noopener" class="vahan-btn">📊 Open Vahan Dashboard ↗</a>
+    <div>
+      <h1 class="brand-title">Ather Energy Intelligence Desk</h1>
+    </div>
+
+    <!-- Live Market Cap & Stock Price Widget -->
+    <div class="market-stats">
+      <div class="stat-box">
+        <span class="stat-label">Market Cap:</span>
+        <span class="stat-value">₹59,372 Cr</span>
+      </div>
+      <div class="stat-box">
+        <span class="stat-label">Live Price:</span>
+        <span class="stat-value">₹1,497.00</span>
+      </div>
+      <a href="https://vahan.parivahan.gov.in/vahan4dashboard/" target="_blank" rel="noopener" class="vahan-btn">📊 Vahan Dashboard ↗</a>
+    </div>
   </header>
 
+  <!-- Newsmap Container -->
   <div class="newsmap-grid" id="newsmap-container">
-    <div id="loader">Fetching latest news and disclosures...</div>
+    <div id="loader">Fetching latest category feeds...</div>
   </div>
 
   <script>
     const FEEDS = [
-      { name: 'BSE Disclosures', url: 'https://news.google.com/rss/search?q=Ather+Energy+BSE+OR+filing+OR+disclosure&hl=en-IN&gl=IN&ceid=IN:en' },
-      { name: 'Tarun Mehta (X)', url: 'https://nitter.net/tarunsmehta/rss' },
-      { name: 'Investor Relations & Press', url: 'https://news.google.com/rss/search?q=Ather+Energy+investor+relations+OR+financial+results&hl=en-IN&gl=IN&ceid=IN:en' },
-      { name: 'OTA & Product Updates', url: 'https://news.google.com/rss/search?q=Atherstack+OR+"Ather+OTA"+OR+"Ather+update"&hl=en-IN&gl=IN&ceid=IN:en' },
-      { name: 'Screener & Valuation', url: 'https://news.google.com/rss/search?q=Ather+Energy+screener+OR+valuation+OR+revenue&hl=en-IN&gl=IN&ceid=IN:en' }
+      { name: 'BSE Disclosures', tag: 'BSE Filing', url: 'https://news.google.com/rss/search?q=Ather+Energy+BSE+OR+filing+OR+disclosure&hl=en-IN&gl=IN&ceid=IN:en' },
+      { name: 'Tarun Mehta (X)', tag: 'CEO Updates', url: 'https://nitter.net/tarunsmehta/rss' },
+      { name: 'Investor Relations & Press', tag: 'Investor Rel', url: 'https://news.google.com/rss/search?q=Ather+Energy+investor+relations+OR+financial+results&hl=en-IN&gl=IN&ceid=IN:en' },
+      { name: 'OTA & Product Updates', tag: 'Software & OTA', url: 'https://news.google.com/rss/search?q=Atherstack+OR+"Ather+OTA"+OR+"Ather+update"&hl=en-IN&gl=IN&ceid=IN:en' },
+      { name: 'Screener & Valuation', tag: 'Valuation & Finance', url: 'https://news.google.com/rss/search?q=Ather+Energy+screener+OR+valuation+OR+revenue&hl=en-IN&gl=IN&ceid=IN:en' }
     ];
+
+    // Local Storage Read Tracking Logic
+    function getReadArticles() {
+      return JSON.parse(localStorage.getItem('ather_read_articles') || '[]');
+    }
+
+    function markAsRead(articleLink, element) {
+      const readArticles = getReadArticles();
+      if (!readArticles.includes(articleLink)) {
+        readArticles.push(articleLink);
+        localStorage.setItem('ather_read_articles', JSON.stringify(readArticles));
+      }
+      element.classList.add('is-read');
+    }
 
     async function renderNewsmap() {
       const container = document.getElementById('newsmap-container');
+      const readArticles = getReadArticles();
       let allArticles = [];
 
       for (const feed of FEEDS) {
@@ -178,7 +245,8 @@
                 title: item.title,
                 link: item.link,
                 pubDate: new Date(item.pubDate),
-                sourceName: feed.name
+                sourceName: feed.name,
+                categoryTag: feed.tag
               });
             });
           }
@@ -187,7 +255,7 @@
         }
       }
 
-      // Sort chronological (Newest first)
+      // Sort by newest first
       allArticles.sort((a, b) => b.pubDate - a.pubDate);
 
       if (allArticles.length === 0) {
@@ -195,16 +263,25 @@
         return;
       }
 
-      // Render Newsmap Cards
-      container.innerHTML = allArticles.slice(0, 24).map(article => `
-        <a class="news-tile" href="${article.link}" target="_blank" rel="noopener" data-source="${article.sourceName}">
-          <div class="tile-title">${article.title}</div>
-          <div class="tile-meta">
-            <span class="tile-source">${article.sourceName}</span>
-            <span class="tile-date">${article.pubDate.toLocaleDateString('en-IN', { day: 'numeric', month: 'short' })}</span>
-          </div>
-        </a>
-      `).join('');
+      container.innerHTML = allArticles.slice(0, 32).map(article => {
+        const isRead = readArticles.includes(article.link) ? 'is-read' : '';
+        return `
+          <a class="news-tile ${isRead}" 
+             href="${article.link}" 
+             target="_blank" 
+             rel="noopener" 
+             data-source="${article.sourceName}"
+             onclick="markAsRead('${article.link}', this)">
+            <div>
+              <span class="category-badge">${article.categoryTag}</span>
+              <div class="tile-title">${article.title}</div>
+            </div>
+            <div class="tile-meta">
+              <span>${article.pubDate.toLocaleDateString('en-IN', { day: 'numeric', month: 'short' })}</span>
+            </div>
+          </a>
+        `;
+      }).join('');
     }
 
     renderNewsmap();
